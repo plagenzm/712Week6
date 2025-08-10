@@ -43,6 +43,12 @@ def retroactive_resolution(
     return x
 
 
+#MP note: seperated augmented matrix code to further encapsulate for clean code, to help debug, and reusability. Copilot confirmed it was a good decision to encapsulate and code was from Copilot
+def create_augmented_matrix(coefficients: NDArray[float64], vector: NDArray[float64]) -> NDArray[float64]:
+    augmented_mat = np.concatenate((coefficients, vector), axis=1)
+    return augmented_mat.astype("float64")
+
+
 # MP note: wanted to add error handler to this function. The error handlers are from Copilot and check inputs to ensure they can be converted to float64
 def gaussian_elimination(
     coefficients, vector
@@ -84,9 +90,8 @@ def gaussian_elimination(
     else:
         print("Matrix is square")
 
-    # augmented matrix
-    augmented_mat: NDArray[float64] = np.concatenate((coefficients, vector), axis=1)
-    augmented_mat = augmented_mat.astype("float64")
+    #MP note: calling the create_augmented_matrix function. Code was from Copilot. 
+    augmented_mat = create_augmented_matrix(coefficients, vector)
 
     # scale the matrix leaving it triangular
     for row in range(rows - 1):
