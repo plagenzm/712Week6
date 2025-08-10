@@ -43,9 +43,19 @@ def retroactive_resolution(
     return x
 
 
+# MP note: wanted to add error handler to this function. The error handlers are from Copilot and check inputs to ensure they can be converted to float64
 def gaussian_elimination(
-    coefficients: NDArray[float64], vector: NDArray[float64]
+    coefficients, vector
 ) -> NDArray[float64]:
+    try:
+        coefficients = np.array(coefficients, dtype=float64)
+        vector = np.array(vector, dtype=float64)
+    except (TypeError, ValueError):
+        raise TypeError("Inputs must be convertible to float64 NumPy arrays.")
+    #MP note: extra check for irregular inputs
+    if not (np.issubdtype(coefficients.dtype, np.number) and np.issubdtype(vector.dtype, np.number)):
+        raise TypeError("Please ensure all inputs are numbers")
+
     """
     This function performs Gaussian elimination method
 
@@ -70,6 +80,9 @@ def gaussian_elimination(
     rows, columns = np.shape(coefficients)
     if rows != columns:
         return np.array((), dtype=float)
+    #MP note: added error message. If this wasn't here the program would run and then finish with no messages. Copilot mentioned using it only temporarily for debugging as it can clutter output later
+    else:
+        print("Matrix is square")
 
     # augmented matrix
     augmented_mat: NDArray[float64] = np.concatenate((coefficients, vector), axis=1)
